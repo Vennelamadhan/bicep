@@ -8,6 +8,12 @@ param location string
 ])
 param environmentType string
 
+@description('The name of the storage account to deploy. This name must be globally unique.')
+param storageAccountName string
+
+@description('The name of the queue to deploy for processing orders.')
+param processOrderQueueName string
+
 @description('The name of the App Service app. This name must be globally unique.')
 param appServiceAppName string
 
@@ -30,5 +36,17 @@ resource appServiceApp 'Microsoft.Web/sites@2023-12-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'StorageAccountName'
+          value: storageAccountName
+        }
+        {
+          name: 'ProcessOrderQueueName'
+          value: processOrderQueueName
+        }
+      ]
+    }
   }
 }
